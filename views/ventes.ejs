@@ -1,0 +1,122 @@
+<%- include('partials/shell-start') %>
+
+<div class="mb-6">
+  <h1 class="font-display text-2xl md:text-3xl font-semibold stitch inline-block">Ventes</h1>
+  <p class="text-sm text-muted mt-3">Enregistre chaque vêtement vendu, le bénéfice est calculé automatiquement.</p>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-5">
+
+  <!-- ===== Formulaire ===== -->
+  <div class="lg:col-span-1">
+    <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5 lg:sticky lg:top-6">
+      <h2 class="font-display text-lg font-semibold mb-4"><i class="fa-solid fa-plus text-gold mr-1.5"></i>Nouvelle vente</h2>
+      <form action="/ventes" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Vêtement</label>
+          <input type="text" name="nom_vetement" required placeholder="Ex : Robe wax, Chemise homme..."
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Prix d'achat</label>
+            <input type="number" step="0.01" min="0" name="prix_achat" required placeholder="0"
+              class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-mono-fig focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Prix de vente</label>
+            <input type="number" step="0.01" min="0" name="prix_vente" required placeholder="0"
+              class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-mono-fig focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Quantité</label>
+            <input type="number" min="1" name="quantite" value="1"
+              class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-mono-fig focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Date</label>
+            <input type="date" name="date_vente"
+              class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+          </div>
+        </div>
+        <button type="submit"
+          class="w-full bg-ink text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors">
+          Enregistrer la vente
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Tableau ===== -->
+  <div class="lg:col-span-2">
+    <div class="bg-surface rounded-xl shadow-sm border border-black/5 overflow-hidden">
+      <% if (ventes.length === 0) { %>
+        <p class="text-sm text-muted p-6 text-center"><i class="fa-regular fa-face-smile mr-1.5"></i>Aucune vente enregistrée pour l'instant.</p>
+      <% } else { %>
+
+        <!-- Vue tableau (desktop) -->
+        <table class="w-full text-sm hidden md:table">
+          <thead>
+            <tr class="text-left text-xs text-muted uppercase tracking-wide border-b border-black/5">
+              <th class="px-5 py-3 font-medium">Vêtement</th>
+              <th class="px-5 py-3 font-medium">Date</th>
+              <th class="px-5 py-3 font-medium text-right">Achat</th>
+              <th class="px-5 py-3 font-medium text-right">Vente</th>
+              <th class="px-5 py-3 font-medium text-right">Bénéfice</th>
+              <th class="px-5 py-3 font-medium text-right">Qté</th>
+              <th class="px-5 py-3"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-black/5">
+            <% ventes.forEach(v => { %>
+              <tr>
+                <td class="px-5 py-3 font-medium"><%= v.nom_vetement %></td>
+                <td class="px-5 py-3 text-muted"><%= new Date(v.date_vente).toLocaleDateString('fr-FR') %></td>
+                <td class="px-5 py-3 text-right font-mono-fig text-muted"><%= Number(v.prix_achat).toLocaleString('fr-FR') %></td>
+                <td class="px-5 py-3 text-right font-mono-fig"><%= Number(v.prix_vente).toLocaleString('fr-FR') %></td>
+                <td class="px-5 py-3 text-right font-mono-fig font-semibold <%= v.benefice >= 0 ? 'text-emerald' : 'text-rust' %>"><%= Number(v.benefice).toLocaleString('fr-FR') %></td>
+                <td class="px-5 py-3 text-right font-mono-fig text-muted"><%= v.quantite %></td>
+                <td class="px-5 py-3 text-right">
+                  <form action="/ventes/<%= v.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Supprimer cette vente ?');">
+                    <button type="submit" class="text-muted hover:text-rust" aria-label="Supprimer">
+                      <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+
+        <!-- Vue cartes (mobile) -->
+        <ul class="md:hidden divide-y divide-black/5">
+          <% ventes.forEach(v => { %>
+            <li class="p-4">
+              <div class="flex items-start justify-between">
+                <div>
+                  <p class="font-medium text-sm"><%= v.nom_vetement %></p>
+                  <p class="text-xs text-muted mt-0.5"><%= new Date(v.date_vente).toLocaleDateString('fr-FR') %> &middot; Qté <%= v.quantite %></p>
+                </div>
+                <form action="/ventes/<%= v.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Supprimer cette vente ?');">
+                  <button type="submit" class="text-muted hover:text-rust p-1" aria-label="Supprimer">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                </form>
+              </div>
+              <div class="flex items-center gap-4 mt-2 text-xs font-mono-fig">
+                <span class="text-muted">Achat: <%= Number(v.prix_achat).toLocaleString('fr-FR') %> F</span>
+                <span>Vente: <%= Number(v.prix_vente).toLocaleString('fr-FR') %> F</span>
+                <span class="font-semibold <%= v.benefice >= 0 ? 'text-emerald' : 'text-rust' %>">Bénéf: <%= Number(v.benefice).toLocaleString('fr-FR') %> F</span>
+              </div>
+            </li>
+          <% }) %>
+        </ul>
+
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/shell-end') %>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('partials/head') %>
+</head>
+<body class="bg-ink text-white antialiased min-h-screen flex items-center justify-center px-4">
+
+  <div class="w-full max-w-sm">
+    <div class="text-center mb-8 stitch inline-block">
+      <p class="font-display text-3xl font-semibold">AnnieShop<span class="text-gold">.</span></p>
+      <p class="text-sm text-white/50 mt-1">Gestion de la boutique</p>
+    </div>
+
+    <div class="bg-white text-ink rounded-xl shadow-xl p-6">
+      <h1 class="font-display text-xl font-semibold mb-1">Connexion admin</h1>
+      <p class="text-sm text-muted mb-5">Accède à ton tableau de bord.</p>
+
+      <%- include('partials/flash') %>
+
+      <form action="/login" method="POST" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium mb-1.5">Email</label>
+          <div class="relative">
+            <i class="fa-regular fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm"></i>
+            <input type="email" id="email" name="email" required autocomplete="username"
+              class="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+              placeholder="admin@boutique.com" />
+          </div>
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium mb-1.5">Mot de passe</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm"></i>
+            <input type="password" id="password" name="password" required autocomplete="current-password"
+              class="w-full rounded-lg border border-gray-200 pl-9 pr-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none"
+              placeholder="••••••••" />
+          </div>
+        </div>
+        <button type="submit"
+          class="w-full bg-ink text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors flex items-center justify-center gap-2">
+          Se connecter <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- <p class="text-center text-xs text-white/40 mt-6">Compte créé depuis Supabase &middot; Authentication &middot; Users</p> -->
+  </div>
+
+</body>
+</html>

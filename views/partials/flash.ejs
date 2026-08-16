@@ -1,0 +1,12 @@
+<% if (successMsg && successMsg.length) { %>
+  <div class="mb-4 flex items-start gap-3 rounded-lg border border-emerald/30 bg-emerald/10 px-4 py-3 text-emerald">
+    <i class="fa-solid fa-circle-check mt-0.5"></i>
+    <p class="text-sm font-medium"><%= successMsg[0] %></p>
+  </div>
+<% } %>
+<% if (errorMsg && errorMsg.length) { %>
+  <div class="mb-4 flex items-start gap-3 rounded-lg border border-rust/30 bg-rust/10 px-4 py-3 text-rust">
+    <i class="fa-solid fa-triangle-exclamation mt-0.5"></i>
+    <p class="text-sm font-medium"><%= errorMsg[0] %></p>
+  </div>
+<% } %>

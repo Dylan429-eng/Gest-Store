@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <%- include('head') %>
+</head>
+<body class="bg-paper text-ink antialiased">
+
+  <div class="min-h-screen md:flex">
+
+    <!-- ===== Sidebar (desktop) ===== -->
+    <aside class="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 bg-ink text-white">
+      <div class="px-6 py-6 stitch">
+        <p class="font-display text-xl font-semibold tracking-tight">AnnieShop<span class="text-gold">.</span></p>
+        <p class="text-xs text-white/50 mt-1">Gestion boutique</p>
+      </div>
+      <nav class="mt-4 flex-1 px-3 space-y-1">
+        <a href="/" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium <%= currentPath === '/' ? 'nav-active bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' %>">
+          <i class="fa-solid fa-gauge-high w-4"></i> Tableau de bord
+        </a>
+        <a href="/ventes" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium <%= currentPath.startsWith('/ventes') ? 'nav-active bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' %>">
+          <i class="fa-solid fa-shirt w-4"></i> Ventes
+        </a>
+        <a href="/depenses" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium <%= currentPath.startsWith('/depenses') ? 'nav-active bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' %>">
+          <i class="fa-solid fa-money-bill-wave w-4"></i> Dépenses
+        </a>
+        <a href="/capital" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium <%= currentPath.startsWith('/capital') ? 'nav-active bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' %>">
+          <i class="fa-solid fa-vault w-4"></i> Capital
+        </a>
+        <a href="/historique" class="flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium <%= currentPath.startsWith('/historique') ? 'nav-active bg-white/10 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white' %>">
+          <i class="fa-solid fa-clock-rotate-left w-4"></i> Historique
+        </a>
+      </nav>
+      <div class="px-3 pb-6 pt-4 border-t border-white/10">
+        <p class="px-3 text-xs text-white/40 truncate mb-2"><i class="fa-regular fa-user mr-1.5"></i><%= userEmail %></p>
+        <form action="/logout" method="POST">
+          <button type="submit" class="w-full flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white">
+            <i class="fa-solid fa-right-from-bracket w-4"></i> Déconnexion
+          </button>
+        </form>
+      </div>
+    </aside>
+
+    <!-- ===== Header mobile ===== -->
+    <header class="md:hidden sticky top-0 z-30 flex items-center justify-between bg-ink text-white px-4 py-3">
+      <p class="font-display text-lg font-semibold">AnnieShop<span class="text-gold">.</span></p>
+      <button id="menuBtn" aria-label="Ouvrir le menu" aria-expanded="false" class="p-2 text-2xl leading-none">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </header>
+
+    <!-- ===== Contenu principal ===== -->
+    <main class="flex-1 md:ml-64 px-4 py-6 md:px-10 md:py-10 max-w-6xl">
+      <%- include('flash') %>

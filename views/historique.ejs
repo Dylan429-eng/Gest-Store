@@ -1,0 +1,48 @@
+<%- include('partials/shell-start') %>
+
+<div class="mb-6">
+  <h1 class="font-display text-2xl md:text-3xl font-semibold stitch inline-block">Historique hebdomadaire</h1>
+  <p class="text-sm text-muted mt-3">Chaque semaine : bénéfice réalisé sur les ventes, dépenses, et solde net.</p>
+</div>
+
+<% if (weeklyStats.length === 0) { %>
+  <div class="bg-surface rounded-xl p-6 shadow-sm border border-black/5 text-center">
+    <p class="text-sm text-muted"><i class="fa-regular fa-chart-bar mr-1.5"></i>Pas encore de données. L'historique apparaîtra dès que tu auras enregistré des ventes ou dépenses.</p>
+  </div>
+<% } else { %>
+
+  <div class="space-y-3">
+    <% weeklyStats.forEach(w => { %>
+      <div class="bg-surface rounded-xl p-4 md:p-5 shadow-sm border border-black/5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+          <p class="text-sm font-semibold">Semaine du <%= w.label %></p>
+          <p class="text-xs text-muted mt-0.5"><%= w.nbVentes %> article(s) vendu(s)</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 md:gap-8 font-mono-fig text-sm">
+          <div>
+            <p class="text-xs text-muted mb-0.5 font-sans">CA</p>
+            <p class="font-semibold"><%= w.chiffreAffaires.toLocaleString('fr-FR') %> F</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted mb-0.5 font-sans">Dépenses</p>
+            <p class="font-semibold text-rust">-<%= w.totalDepenses.toLocaleString('fr-FR') %> F</p>
+          </div>
+          <div>
+            <p class="text-xs text-muted mb-0.5 font-sans">Net</p>
+            <p class="font-semibold <%= w.beneficeNet >= 0 ? 'text-emerald' : 'text-rust' %>"><%= w.beneficeNet.toLocaleString('fr-FR') %> F</p>
+          </div>
+        </div>
+
+        <span class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-3 py-1.5 w-fit
+          <%= w.tendance === 'hausse' ? 'bg-emerald/10 text-emerald' : w.tendance === 'baisse' ? 'bg-rust/10 text-rust' : 'bg-gray-100 text-muted' %>">
+          <i class="fa-solid <%= w.tendance === 'hausse' ? 'fa-arrow-trend-up' : w.tendance === 'baisse' ? 'fa-arrow-trend-down' : 'fa-minus' %>"></i>
+          <%= w.tendance === 'hausse' ? 'En hausse' : w.tendance === 'baisse' ? 'En baisse' : 'Stable' %>
+        </span>
+      </div>
+    <% }) %>
+  </div>
+
+<% } %>
+
+<%- include('partials/shell-end') %>

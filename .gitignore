@@ -1,0 +1,24 @@
+# Dépendances
+node_modules/
+
+# Variables d'environnement (contient tes clés Supabase, ne JAMAIS commit)
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Système / éditeurs
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build / cache éventuels
+dist/
+.cache/

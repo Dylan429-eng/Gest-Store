@@ -1,0 +1,174 @@
+<%- include('partials/shell-start') %>
+
+<div class="mb-8">
+  <h1 class="font-display text-2xl md:text-3xl font-semibold stitch inline-block">Tableau de bord</h1>
+  <p class="text-sm text-muted mt-3">Vue d'ensemble de l'activité de la boutique.</p>
+</div>
+
+<% if (!stats) { %>
+  <p class="text-rust text-sm">Les données n'ont pas pu être chargées. Vérifie ta configuration Supabase.</p>
+<% } else { %>
+
+  <!-- ===== KPIs ===== -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
+    <div class="bg-surface rounded-xl p-4 md:p-5 shadow-sm border border-black/5">
+      <div class="flex items-center gap-2 text-muted text-xs font-medium uppercase tracking-wide">
+        <i class="fa-solid fa-vault text-gold"></i> Capital
+      </div>
+      <p class="font-mono-fig text-xl md:text-2xl font-semibold mt-2"><%= stats.totalCapital.toLocaleString('fr-FR') %> F</p>
+    </div>
+
+    <div class="bg-surface rounded-xl p-4 md:p-5 shadow-sm border border-black/5">
+      <div class="flex items-center gap-2 text-muted text-xs font-medium uppercase tracking-wide">
+        <i class="fa-solid fa-shirt text-gold"></i> Chiffre d'affaires
+      </div>
+      <p class="font-mono-fig text-xl md:text-2xl font-semibold mt-2"><%= stats.totalCA.toLocaleString('fr-FR') %> F</p>
+      <p class="text-xs text-muted mt-1"><%= stats.nbVentes %> article(s) vendu(s)</p>
+    </div>
+
+    <div class="bg-surface rounded-xl p-4 md:p-5 shadow-sm border border-black/5">
+      <div class="flex items-center gap-2 text-muted text-xs font-medium uppercase tracking-wide">
+        <i class="fa-solid fa-money-bill-wave text-rust"></i> Dépenses
+      </div>
+      <p class="font-mono-fig text-xl md:text-2xl font-semibold mt-2 text-rust"><%= stats.totalDepenses.toLocaleString('fr-FR') %> F</p>
+    </div>
+
+    <div class="bg-surface rounded-xl p-4 md:p-5 shadow-sm border border-black/5">
+      <div class="flex items-center gap-2 text-muted text-xs font-medium uppercase tracking-wide">
+        <i class="fa-solid fa-scale-balanced <%= stats.beneficeNet >= 0 ? 'text-emerald' : 'text-rust' %>"></i> Bénéfice net
+      </div>
+      <p class="font-mono-fig text-xl md:text-2xl font-semibold mt-2 <%= stats.beneficeNet >= 0 ? 'text-emerald' : 'text-rust' %>">
+        <%= stats.beneficeNet.toLocaleString('fr-FR') %> F
+      </p>
+    </div>
+  </div>
+
+  <!-- ===== Solde de caisse + tendance semaine ===== -->
+  <div class="grid md:grid-cols-3 gap-4 mb-8">
+    <div class="md:col-span-1 bg-ink text-white rounded-xl p-5 shadow-sm">
+      <p class="text-xs uppercase tracking-wide text-white/50 font-medium">Solde de caisse actuel</p>
+      <p class="font-mono-fig text-2xl md:text-3xl font-semibold mt-2"><%= stats.soldeCaisse.toLocaleString('fr-FR') %> F</p>
+      <p class="text-xs text-white/40 mt-2">Capital + bénéfices - dépenses cumulés</p>
+    </div>
+
+    <div class="md:col-span-2 bg-surface rounded-xl p-5 shadow-sm border border-black/5">
+      <p class="text-xs uppercase tracking-wide text-muted font-medium mb-3">Cette semaine vs semaine précédente</p>
+      <% if (stats.semaineActuelle) { %>
+        <div class="flex items-center gap-4">
+          <p class="font-mono-fig text-2xl font-semibold <%= stats.semaineActuelle.beneficeNet >= 0 ? 'text-emerald' : 'text-rust' %>">
+            <%= stats.semaineActuelle.beneficeNet.toLocaleString('fr-FR') %> F
+          </p>
+          <% if (stats.semainePrecedente) { %>
+            <span class="inline-flex items-center gap-1.5 text-xs font-semibold rounded-full px-2.5 py-1
+              <%= stats.semaineActuelle.tendance === 'hausse' ? 'bg-emerald/10 text-emerald' : stats.semaineActuelle.tendance === 'baisse' ? 'bg-rust/10 text-rust' : 'bg-gray-100 text-muted' %>">
+              <i class="fa-solid <%= stats.semaineActuelle.tendance === 'hausse' ? 'fa-arrow-trend-up' : stats.semaineActuelle.tendance === 'baisse' ? 'fa-arrow-trend-down' : 'fa-minus' %>"></i>
+              <%= stats.semaineActuelle.tendance === 'hausse' ? 'En hausse' : stats.semaineActuelle.tendance === 'baisse' ? 'En baisse' : 'Stable' %>
+            </span>
+          <% } %>
+        </div>
+        <p class="text-xs text-muted mt-2">Semaine du <%= stats.semaineActuelle.label %></p>
+      <% } else { %>
+        <p class="text-sm text-muted">Pas encore de données cette semaine.</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- ===== Courbe de performance ===== -->
+  <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5 mb-8">
+    <h2 class="font-display text-lg font-semibold stitch inline-block mb-4">Courbe de performance</h2>
+    <% if (weeklyStats.length === 0) { %>
+      <p class="text-sm text-muted"><i class="fa-regular fa-chart-bar mr-1.5"></i> Pas encore assez de données pour tracer une courbe. Enregistre des ventes et dépenses pour la voir apparaître.</p>
+    <% } else { %>
+      <div class="relative h-64 md:h-80">
+        <canvas id="performanceChart"></canvas>
+      </div>
+    <% } %>
+  </div>
+
+  <!-- ===== Dernières opérations ===== -->
+  <div class="grid md:grid-cols-2 gap-4">
+    <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-display text-lg font-semibold">Dernières ventes</h2>
+        <a href="/ventes" class="text-xs font-medium text-gold hover:underline">Voir tout <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+      </div>
+      <% if (recentVentes.length === 0) { %>
+        <p class="text-sm text-muted">Aucune vente enregistrée pour le moment.</p>
+      <% } else { %>
+        <ul class="divide-y divide-black/5">
+          <% recentVentes.forEach(v => { %>
+            <li class="py-2.5 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium"><%= v.nom_vetement %></p>
+                <p class="text-xs text-muted"><%= new Date(v.date_vente).toLocaleDateString('fr-FR') %></p>
+              </div>
+              <p class="font-mono-fig text-sm font-semibold text-emerald">+<%= Number(v.benefice).toLocaleString('fr-FR') %> F</p>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+
+    <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="font-display text-lg font-semibold">Dernières dépenses</h2>
+        <a href="/depenses" class="text-xs font-medium text-gold hover:underline">Voir tout <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+      </div>
+      <% if (recentDepenses.length === 0) { %>
+        <p class="text-sm text-muted">Aucune dépense enregistrée pour le moment.</p>
+      <% } else { %>
+        <ul class="divide-y divide-black/5">
+          <% recentDepenses.forEach(d => { %>
+            <li class="py-2.5 flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium"><%= d.libelle %></p>
+                <p class="text-xs text-muted"><%= new Date(d.date_depense).toLocaleDateString('fr-FR') %></p>
+              </div>
+              <p class="font-mono-fig text-sm font-semibold text-rust">-<%= Number(d.montant).toLocaleString('fr-FR') %> F</p>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </div>
+
+<% } %>
+
+<% if (stats && weeklyStats.length > 0) { %>
+<script>
+  const weeklyData = <%- JSON.stringify(weeklyStats) %>;
+  const ctx = document.getElementById('performanceChart');
+
+  if (typeof Chart === 'undefined') {
+    console.error('Chart.js ne s\'est pas chargé (vérifie ta connexion internet ou le CDN).');
+  } else {
+    new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: weeklyData.map(w => w.label),
+      datasets: [{
+        label: 'Bénéfice net (F)',
+        data: weeklyData.map(w => w.beneficeNet),
+        borderColor: '#C9992B',
+        backgroundColor: 'rgba(201,153,43,0.12)',
+        fill: true,
+        tension: 0.3,
+        pointBackgroundColor: '#171B26',
+        pointRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'IBM Plex Mono' } } },
+        x: { grid: { display: false }, ticks: { font: { family: 'IBM Plex Mono' }, maxRotation: 0 } }
+      }
+    }
+    });
+  }
+</script>
+<% } %>
+
+<%- include('partials/shell-end') %>

@@ -1,0 +1,52 @@
+    </main>
+  </div>
+
+  <!-- ===== Menu mobile (off-canvas) =====
+       Placé en dehors du conteneur flex, directement dans <body>, pour
+       éviter tout souci d'empilement (stacking context) avec le contenu
+       principal. Fond 100% opaque forcé en inline style + z-index maximal. -->
+  <div
+    id="mobileMenu"
+    class="md:hidden hidden fixed inset-0 flex flex-col text-white overflow-y-auto"
+    style="z-index: 999; background-color: #171B26;"
+  >
+    <div class="flex items-center justify-between px-4 py-3 border-b border-white/10">
+      <p class="font-display text-lg font-semibold">Menu</p>
+      <button id="closeMenuBtn" aria-label="Fermer le menu" class="p-2 text-2xl leading-none">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <nav class="px-4 py-4 space-y-1">
+      <a href="/" class="flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium <%= currentPath === '/' ? 'bg-white/10 text-white' : 'text-white' %>"><i class="fa-solid fa-gauge-high w-5"></i> Tableau de bord</a>
+      <a href="/ventes" class="flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium <%= currentPath.startsWith('/ventes') ? 'bg-white/10 text-white' : 'text-white' %>"><i class="fa-solid fa-shirt w-5"></i> Ventes</a>
+      <a href="/depenses" class="flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium <%= currentPath.startsWith('/depenses') ? 'bg-white/10 text-white' : 'text-white' %>"><i class="fa-solid fa-money-bill-wave w-5"></i> Dépenses</a>
+      <a href="/capital" class="flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium <%= currentPath.startsWith('/capital') ? 'bg-white/10 text-white' : 'text-white' %>"><i class="fa-solid fa-vault w-5"></i> Capital</a>
+      <a href="/historique" class="flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium <%= currentPath.startsWith('/historique') ? 'bg-white/10 text-white' : 'text-white' %>"><i class="fa-solid fa-clock-rotate-left w-5"></i> Historique</a>
+      <form action="/logout" method="POST" class="pt-2 border-t border-white/10 mt-2">
+        <button type="submit" class="w-full flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium text-white">
+          <i class="fa-solid fa-right-from-bracket w-5"></i> Déconnexion
+        </button>
+      </form>
+    </nav>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenuBtn = document.getElementById('closeMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    function openMenu() {
+      mobileMenu.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      menuBtn.setAttribute('aria-expanded', 'true');
+    }
+    function closeMenu() {
+      mobileMenu.classList.add('hidden');
+      document.body.style.overflow = '';
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+    menuBtn && menuBtn.addEventListener('click', openMenu);
+    closeMenuBtn && closeMenuBtn.addEventListener('click', closeMenu);
+  </script>
+</body>
+</html>

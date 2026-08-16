@@ -1,0 +1,63 @@
+<%- include('partials/shell-start') %>
+
+<div class="mb-6">
+  <h1 class="font-display text-2xl md:text-3xl font-semibold stitch inline-block">Capital</h1>
+  <p class="text-sm text-muted mt-3">Le capital de départ et les apports supplémentaires injectés dans la boutique.</p>
+</div>
+
+<div class="bg-ink text-white rounded-xl p-5 mb-5">
+  <p class="text-xs uppercase tracking-wide text-white/50 font-medium">Capital total investi</p>
+  <p class="font-mono-fig text-2xl md:text-3xl font-semibold mt-2"><%= total.toLocaleString('fr-FR') %> F</p>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-5">
+
+  <div class="lg:col-span-1">
+    <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5 lg:sticky lg:top-6">
+      <h2 class="font-display text-lg font-semibold mb-4"><i class="fa-solid fa-plus text-gold mr-1.5"></i>Nouvel apport</h2>
+      <form action="/capital" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Montant</label>
+          <input type="number" step="0.01" min="0" name="montant" required placeholder="0"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm font-mono-fig focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Description</label>
+          <input type="text" name="description" placeholder="Ex : Capital de départ, Apport complémentaire..."
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Date</label>
+          <input type="date" name="date_apport"
+            class="w-full rounded-lg border border-gray-200 px-3 py-2.5 text-sm focus:border-gold focus:ring-1 focus:ring-gold outline-none" />
+        </div>
+        <button type="submit"
+          class="w-full bg-ink text-white rounded-lg py-2.5 text-sm font-semibold hover:bg-ink/90 transition-colors">
+          Enregistrer l'apport
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="lg:col-span-2">
+    <div class="bg-surface rounded-xl shadow-sm border border-black/5 overflow-hidden">
+      <% if (capital.length === 0) { %>
+        <p class="text-sm text-muted p-6 text-center"><i class="fa-regular fa-face-smile mr-1.5"></i>Aucun capital enregistré pour l'instant.</p>
+      <% } else { %>
+        <ul class="divide-y divide-black/5">
+          <% capital.forEach(c => { %>
+            <li class="p-4 flex items-center justify-between">
+              <div>
+                <p class="font-medium text-sm"><%= c.description %></p>
+                <p class="text-xs text-muted mt-0.5"><%= new Date(c.date_apport).toLocaleDateString('fr-FR') %></p>
+              </div>
+              <p class="font-mono-fig text-sm font-semibold text-gold">+<%= Number(c.montant).toLocaleString('fr-FR') %> F</p>
+            </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/shell-end') %>
