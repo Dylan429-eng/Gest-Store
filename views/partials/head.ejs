@@ -25,33 +25,6 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 />
 
-<!-- Tailwind (CDN, sans étape de build) -->
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          // Format "rgb(r g b / <alpha-value>)" requis par Tailwind pour que
-          // les modificateurs d'opacité (ex: bg-ink/98) génèrent bien un fond,
-          // au lieu de rester transparents avec un hex simple.
-          ink: 'rgb(23 27 38 / <alpha-value>)',
-          paper: '#EEF1EF',
-          surface: '#FFFFFF',
-          muted: '#6B7280',
-          gold: 'rgb(201 153 43 / <alpha-value>)',
-          emerald: 'rgb(47 143 107 / <alpha-value>)',
-          rust: 'rgb(193 82 58 / <alpha-value>)',
-        },
-        fontFamily: {
-          display: ['"Fraunces"', 'serif'],
-          sans: ['"Inter"', 'sans-serif'],
-          mono: ['"IBM Plex Mono"', 'monospace'],
-        },
-      },
-    },
-  };
-</script>
 
 <!-- Chart.js pour la courbe de performance -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>

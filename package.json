@@ -4,8 +4,10 @@
   "description": "Application de gestion et suivi financier pour boutique de vêtements",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "npm run build:css && node server.js",
+    "dev": "nodemon server.js",
+    "build:css": "postcss src/style.css -o public/css/style.css",
+    "watch:css": "postcss src/style.css -o public/css/style.css --watch"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -18,7 +20,11 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "@tailwindcss/postcss": "^4.3.3",
+    "nodemon": "^3.1.4",
+    "postcss": "^8.5.26",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.3.3"
   },
   "engines": {
     "node": ">=18.0.0"
