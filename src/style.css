@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: rgb(23 27 38 / <alpha-value>);
+  --color-ink: rgb(23 27 38);
   --color-paper: #EEF1EF;
   --color-surface: #FFFFFF;
   --color-muted: #6B7280;
-  --color-gold: rgb(201 153 43 / <alpha-value>);
-  --color-emerald: rgb(47 143 107 / <alpha-value>);
-  --color-rust: rgb(193 82 58 / <alpha-value>);
+  --color-gold: rgb(201 153 43);
+  --color-emerald: rgb(47 143 107);
+  --color-rust: rgb(193 82 58);
 
   --font-display: "Fraunces", serif;
   --font-sans: "Inter", sans-serif;
