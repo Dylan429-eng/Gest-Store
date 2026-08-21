@@ -849,11 +849,7 @@ html {
   border-radius: 2px;
   background: #C9992B;
 }
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
   outline: 2px solid #C9992B;
   outline-offset: 2px;
 }

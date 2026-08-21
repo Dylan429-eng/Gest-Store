@@ -1,4 +1,4 @@
-const CACHE_NAME = 'atelier-boutique-v1';
+const CACHE_NAME = 'atelier-boutique-v2';
 
 // Uniquement des fichiers statiques et sans données financières :
 // on ne met JAMAIS en cache le dashboard, ventes, dépenses, etc.
@@ -29,6 +29,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
+  const url = new URL(request.url);
 
   // Navigation (chargement d'une page) : toujours essayer le réseau
   // d'abord (données à jour) ; si hors-ligne, afficher offline.html.
@@ -39,11 +40,15 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Fichiers statiques connus (app shell) : cache d'abord pour la rapidité.
-  const url = new URL(request.url);
+  // Fichiers statiques connus (app shell) : réseau d'abord pour garantir
+  // la fraîcheur du CSS, puis cache en secours hors-ligne.
   if (url.origin === self.location.origin && APP_SHELL.includes(url.pathname)) {
     event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request))
+      fetch(request).then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        return response;
+      }).catch(() => caches.match(request))
     );
     return;
   }
