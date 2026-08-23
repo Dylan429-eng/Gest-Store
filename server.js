@@ -8,6 +8,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
+const profitRoutes = require('./routes/profit');
 const venteRoutes = require('./routes/ventes');
 const depenseRoutes = require('./routes/depenses');
 const capitalRoutes = require('./routes/capital');
@@ -50,6 +51,7 @@ app.use((req, res, next) => {
 // --- Routes ---
 app.use('/', authRoutes);
 app.use('/', dashboardRoutes);
+app.use('/profit-journalier', profitRoutes);
 app.use('/ventes', venteRoutes);
 app.use('/depenses', depenseRoutes);
 app.use('/capital', capitalRoutes);

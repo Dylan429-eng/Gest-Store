@@ -1,0 +1,57 @@
+<%- include('partials/shell-start') %>
+
+<div class="mb-6">
+  <h1 class="font-display text-2xl md:text-3xl font-semibold stitch inline-block">Profit journalier</h1>
+  <p class="text-sm text-muted mt-3">Bénéfice net de chaque journée après déduction des dépenses.</p>
+</div>
+
+<% if (todayStats) { %>
+  <div class="bg-surface rounded-xl p-5 shadow-sm border border-black/5 mb-6">
+    <p class="text-xs uppercase tracking-wide text-muted font-medium">Aujourd'hui</p>
+    <p class="font-mono-fig text-2xl md:text-3xl font-semibold mt-2 <%= todayStats.pnl >= 0 ? 'text-emerald' : 'text-rust' %>">
+      <%= todayStats.pnl.toLocaleString('fr-FR') %> F
+    </p>
+    <div class="flex items-center gap-4 mt-3 text-xs text-muted">
+      <span><i class="fa-solid fa-shirt mr-1"></i><%= todayStats.nbVentes %> article(s) vendu(s)</span>
+      <span><i class="fa-solid fa-arrow-trend-up mr-1"></i>Ventes : <%= todayStats.ventesProfit.toLocaleString('fr-FR') %> F</span>
+      <span><i class="fa-solid fa-arrow-trend-down mr-1"></i>Dépenses : <%= todayStats.depenses.toLocaleString('fr-FR') %> F</span>
+    </div>
+  </div>
+<% } %>
+
+<div class="bg-surface rounded-xl shadow-sm border border-black/5 overflow-hidden">
+  <% if (dailyStats.length === 0) { %>
+    <p class="text-sm text-muted p-6 text-center"><i class="fa-regular fa-face-smile mr-1.5"></i>Aucune donnée enregistrée pour l'instant.</p>
+  <% } else { %>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-muted uppercase tracking-wide border-b border-black/5">
+            <th class="px-5 py-3 font-medium">Date</th>
+            <th class="px-5 py-3 font-medium text-right">Ventes</th>
+            <th class="px-5 py-3 font-medium text-right">Dépenses</th>
+            <th class="px-5 py-3 font-medium text-right">Profit net</th>
+            <th class="px-5 py-3 font-medium text-right">Qté vendue</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-black/5">
+          <% dailyStats.forEach((d) => { %>
+            <tr>
+              <td class="px-5 py-3 font-medium"><%= d.label %></td>
+              <td class="px-5 py-3 text-right font-mono-fig text-emerald"><%= d.ventesProfit.toLocaleString('fr-FR') %> F</td>
+              <td class="px-5 py-3 text-right font-mono-fig text-rust"><%= d.depenses.toLocaleString('fr-FR') %> F</td>
+              <td class="px-5 py-3 text-right font-mono-fig font-semibold <%= d.pnl >= 0 ? 'text-emerald' : 'text-rust' %>">
+                <%= d.pnl.toLocaleString('fr-FR') %> F
+              </td>
+              <td class="px-5 py-3 text-right font-mono-fig text-muted"><%= d.nbVentes %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  <% } %>
+</div>
+
+<%- include('partials/shell-end') %>
