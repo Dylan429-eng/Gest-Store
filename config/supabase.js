@@ -15,8 +15,16 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 // s'il n'est pas utilisé ici) en a besoin pour s'initialiser sans planter.
 const realtimeOptions = { realtime: { transport: ws } };
 
-// Client "public" utilisé uniquement pour login/logout (pas de session utilisateur encore)
-const supabasePublic = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, realtimeOptions);
+// Client "public" utilisé pour login/logout et le rafraîchissement de token.
+// persistSession désactivé : côté serveur (Node) il n'y a pas de localStorage,
+// on gère nous-mêmes le stockage du token dans la session Express.
+const supabasePublic = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  ...realtimeOptions,
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+  },
+});
 
 /**
  * Crée un client Supabase authentifié avec le token de l'utilisateur en session.
