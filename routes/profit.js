@@ -26,10 +26,11 @@ router.get('/', requireAuth, async (req, res) => {
   (ventes || []).forEach((v) => {
     const key = getDayKey(v.date_vente);
     if (!days.has(key)) {
-      days.set(key, { date: key, label: formatDayLabel(key), ventesProfit: 0, depenses: 0, nbVentes: 0 });
+      days.set(key, { date: key, label: formatDayLabel(key), chiffreAffaires: 0, ventesProfit: 0, depenses: 0, nbVentes: 0 });
     }
     const day = days.get(key);
     const qte = v.quantite || 1;
+    day.chiffreAffaires += Number(v.prix_vente) * qte;
     day.ventesProfit += Number(v.benefice) * qte;
     day.nbVentes += qte;
   });
