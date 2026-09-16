@@ -36,13 +36,13 @@ router.get('/', requireAuth, async (req, res) => {
   });
 
   (depenses || []).forEach((d) => {
-    const key = getDayKey(d.date_depense);
-    if (!days.has(key)) {
-      days.set(key, { date: key, label: formatDayLabel(key), ventesProfit: 0, depenses: 0, nbVentes: 0 });
-    }
-    const day = days.get(key);
-    day.depenses += Number(d.montant);
-  });
+  const key = getDayKey(d.date_depense);
+  if (!days.has(key)) {
+    days.set(key, { date: key, label: formatDayLabel(key), chiffreAffaires: 0, ventesProfit: 0, depenses: 0, nbVentes: 0 });
+  }
+  const day = days.get(key);
+  day.depenses += Number(d.montant);
+});
 
   const dailyStats = Array.from(days.values())
     .map((d) => ({
